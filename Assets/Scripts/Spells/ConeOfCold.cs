@@ -4,8 +4,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ConeOfCold", menuName = "Scriptable Objects/Spells/ConeOfCold")]
 public class ConeOfCold : Spell
 {
-    public float damage = 10f;
-    public float range = 5f;
     public float angle = 45f;
     public LayerMask hitMask;
 
@@ -29,6 +27,20 @@ public class ConeOfCold : Spell
                     damageable.TakeDamage(damage);
                 }
             }
+        }
+
+        Transform spellSpawnPoint = player.GetComponent<PlayerCharacter>().SpellSpawnPoint;
+        if (particle && spellSpawnPoint)
+        {
+            if (!particleInstance)
+            {
+                particleInstance = Instantiate(particle, origin, Quaternion.identity);
+                particleInstance.transform.SetParent(spellSpawnPoint);
+            }
+            particleInstance.transform.rotation = Quaternion.Euler(0f, (direction.x > 0f) ? 0f : 180f, 0f);
+
+            particleInstance.Play();
+            particleInstance.Play();
         }
     }
 }
