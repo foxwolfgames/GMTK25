@@ -9,11 +9,11 @@ public class ConeOfCold : Spell
     public float angle = 45f;
     public LayerMask hitMask;
 
-    public override void Cast(GameObject user)
+    public override void Cast(GameObject player)
     {
         Debug.Log("Cast Cone");
-        Vector2 origin = user.transform.position;
-        Vector2 direction = user.transform.right;
+        Vector2 origin = player.transform.position;
+        Vector2 direction = player.GetComponent<PlayerMovement>().Direction;
         Collider2D[] hits = Physics2D.OverlapCircleAll(origin, range, hitMask);
 
         foreach (var hit in hits)

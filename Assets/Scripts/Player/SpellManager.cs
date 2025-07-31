@@ -24,7 +24,7 @@ public class SpellManager : MonoBehaviour
     private void Start()
     {
         cast1Action = playerInput.actions["Cast1"];
-        cast1Action.performed += _ => TryCast(0);
+        cast1Action.performed += context => TryCast(0);
     }
 
     public void TryCast(int index)

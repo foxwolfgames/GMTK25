@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform spriteTransform;
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 14f;
@@ -44,6 +45,8 @@ public class PlayerMovement : MonoBehaviour
     private float timeLeftGrounded;
     private bool jumpEndedEarly;
 
+    public Vector2 Direction;
+
     private void Awake()
     {
         rigidBody = GetComponent<Rigidbody2D>();
@@ -56,17 +59,17 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         moveAction = playerInput.actions["Move"];
-        moveAction.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
-        moveAction.canceled += ctx => movementInput = Vector2.zero;
+        moveAction.performed += context => movementInput = context.ReadValue<Vector2>();
+        moveAction.canceled += context => movementInput = Vector2.zero;
 
         jumpAction = playerInput.actions["Jump"];
-        jumpAction.performed += _ =>
+        jumpAction.performed += context =>
         {
             jumpPressed = true;
             jumpHeld = true;
             lastJumpPressedTime = Time.time;
         };
-        jumpAction.canceled += _ => jumpHeld = false;
+        jumpAction.canceled += context => jumpHeld = false;
     }
 
     private void FixedUpdate()
@@ -87,10 +90,10 @@ public class PlayerMovement : MonoBehaviour
         Vector2 capsuleCenter = capsuleCollider.bounds.center;
         Vector2 capsuleSize = capsuleCollider.size;
         CapsuleDirection2D capsuleDir = capsuleCollider.direction;
-        float checkDistance = 0.05f; // Adjust if needed
-        LayerMask platformMask = groundLayer; // Or ~playerLayer if you have it
+        float checkDistance = 0.05f;
+        LayerMask platformMask = groundLayer;
 
-        // Ground and Ceiling Checks
+        // Ground and ceiling checks
         bool groundHit = Physics2D.CapsuleCast(capsuleCenter, capsuleSize, capsuleDir, 0, Vector2.down, checkDistance, platformMask);
         bool ceilingHit = Physics2D.CapsuleCast(capsuleCenter, capsuleSize, capsuleDir, 0, Vector2.up, checkDistance, platformMask);
 
@@ -100,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
             currentVelocity.y = 0;
         }
 
-        // Handle ground state transitions
+        // Handle ground state
         bool wasGrounded = isGrounded;
 
         if (!wasGrounded && groundHit)
@@ -127,6 +130,18 @@ public class PlayerMovement : MonoBehaviour
             : (Mathf.Abs(targetSpeed) > 0.01f ? airAcceleration : airDeceleration);
 
         currentVelocity.x = Mathf.MoveTowards(currentVelocity.x, targetSpeed, accel * Time.fixedDeltaTime);
+
+        // Flip sprite
+        if (movementInput.x > 0.01f)
+        {
+            spriteTransform.localScale = new Vector3(1, 1, 1);
+            Direction = Vector2.right;
+        }
+        else if (movementInput.x < -0.01f)
+        {
+            spriteTransform.localScale = new Vector3(-1, 1, 1);
+            Direction = Vector2.left;
+        }
     }
 
     private void HandleJump()

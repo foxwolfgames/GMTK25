@@ -1057,6 +1057,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 862910224028032704, guid: 663d5a69fd34f684f8d4a7298e871dd4, type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 519420031}
     - target: {fileID: 6827918657714257846, guid: 663d5a69fd34f684f8d4a7298e871dd4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1108,31 +1112,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 9154293436212090034, guid: 663d5a69fd34f684f8d4a7298e871dd4, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6700830538187427158}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 663d5a69fd34f684f8d4a7298e871dd4, type: 3}
---- !u!1 &6700830538187427157 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9154293436212090034, guid: 663d5a69fd34f684f8d4a7298e871dd4, type: 3}
-  m_PrefabInstance: {fileID: 6700830538187427156}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &6700830538187427158
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6700830538187427157}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32e9594bda89cfb449b8887e97588e99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spellList:
-  - spell: {fileID: 11400000, guid: 2e824ffd1f3c13049ab65a7f410efdaf, type: 2}
-    lastCastTime: -Infinity
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
