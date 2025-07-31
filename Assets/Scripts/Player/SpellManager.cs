@@ -1,9 +1,17 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class SpellManager : MonoBehaviour
 {
-    [SerializeField] private Spell[] spellList;
+    [System.Serializable]
+    public class SpellSlot
+    {
+        public Spell spell;
+        public float lastCastTime = -Mathf.Infinity;
+    }
+    [SerializeField] private List<SpellSlot> spellList;
 
     private PlayerInput playerInput;
     private InputAction cast1Action;
@@ -16,16 +24,23 @@ public class SpellManager : MonoBehaviour
     private void Start()
     {
         cast1Action = playerInput.actions["Cast1"];
-        cast1Action.performed += _ => CastSpell(0);
+        cast1Action.performed += _ => TryCast(0);
     }
 
-    private void CastSpell(int index)
+    public void TryCast(int index)
     {
-        if (index > 0) return;
+        if (index < 0 || index >= spellList.Count) return;
 
-        if (index < spellList.Length && spellList[index] != null)
+        SpellSlot currentSpell = spellList[index];
+        
+        if (Time.time >= currentSpell.lastCastTime + currentSpell.spell.cooldown)
         {
-            spellList[index].TryCast(gameObject);
+            currentSpell.spell.Cast(gameObject);
+            currentSpell.lastCastTime = Time.time;
+        }
+        else
+        {
+            Debug.Log($"{currentSpell.spell.spellName} is on cooldown");
         }
     }
 }
