@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 public class PlayerMovement : MonoBehaviour
@@ -19,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float coyoteTime = 0.15f;
     [SerializeField] private float jumpBufferTime = 0.2f;
     [SerializeField] private float jumpEndEarlyGravityMultiplier = 3f;
+    private int timesJumped = 0;
+    [SerializeField] bool CanDoubleJump = true;
 
     [Header("Gravity")]
     [SerializeField] private float maxFallSpeed = 40f;
@@ -28,6 +31,11 @@ public class PlayerMovement : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private Vector2 currentVelocity;
     [SerializeField] private bool isGrounded;
+    private bool wasGrounded = false;
+
+    [Header("Events")]
+    public UnityEvent Landed;
+
 
     private Rigidbody2D rigidBody;
     private CapsuleCollider2D capsuleCollider;
@@ -43,6 +51,8 @@ public class PlayerMovement : MonoBehaviour
     private float lastGroundedTime;
     private float timeLeftGrounded;
     private bool jumpEndedEarly;
+
+    #region Unity Methods
 
     private void Awake()
     {
@@ -80,6 +90,10 @@ public class PlayerMovement : MonoBehaviour
         rigidBody.linearVelocity = currentVelocity;
     }
 
+    #endregion
+
+    #region Movement Methods
+
     private void CheckCollisions()
     {
         Physics2D.queriesStartInColliders = false;
@@ -101,18 +115,22 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Handle ground state transitions
-        bool wasGrounded = isGrounded;
+        //bool wasGrounded = isGrounded;
 
         if (!wasGrounded && groundHit)
         {
             isGrounded = true;
             jumpEndedEarly = false;
             lastGroundedTime = Time.time;
+
+            timesJumped = 0;
+            Landed?.Invoke();
         }
-        else if (wasGrounded && !groundHit)
+        else //if (wasGrounded && !groundHit)
         {
             isGrounded = false;
             timeLeftGrounded = Time.time;
+            wasGrounded = isGrounded;
         }
 
         Physics2D.queriesStartInColliders = cachedQueryStartInColliders;
@@ -134,12 +152,18 @@ public class PlayerMovement : MonoBehaviour
         bool canCoyote = !isGrounded && Time.time - timeLeftGrounded <= coyoteTime;
         bool canBuffered = Time.time - lastJumpPressedTime <= jumpBufferTime;
 
+        if (!CanDoubleJump || timesJumped >= 2)
+        {
+            return;
+        }
+
         if ((isGrounded || canCoyote) && canBuffered)
         {
             currentVelocity.y = jumpForce;
             jumpEndedEarly = false;
             lastJumpPressedTime = float.MinValue;
             lastGroundedTime = float.MinValue;
+            timesJumped++;
         }
 
         if (!jumpHeld && currentVelocity.y > 0 && !jumpEndedEarly)
@@ -151,7 +175,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleGravity()
     {
-        if (isGrounded && currentVelocity.y <= 0f)
+        if (isGrounded && currentVelocity.y <= 0.01f)
         {
             currentVelocity.y = groundingForce;
         }
@@ -165,6 +189,7 @@ public class PlayerMovement : MonoBehaviour
             currentVelocity.y = Mathf.MoveTowards(currentVelocity.y, -maxFallSpeed, gravity * Time.fixedDeltaTime);
         }
     }
+
     private void OnDrawGizmosSelected()
     {
         if (capsuleCollider == null) return;
@@ -176,4 +201,5 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.DrawWireCube(capsuleCollider.bounds.center + Vector3.up * 0.05f, capsuleCollider.bounds.size);
     }
 
+    #endregion
 }
