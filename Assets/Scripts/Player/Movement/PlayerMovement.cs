@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform spriteTransform;
 
     [Header("Movement")]
@@ -30,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Vector2 currentVelocity;
     [SerializeField] private bool isGrounded;
 
+    private GameManager GM;
     private Rigidbody2D rigidBody;
     private CapsuleCollider2D capsuleCollider;
     private bool cachedQueryStartInColliders;
@@ -48,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
+        GM = GameManager.Instance;
         rigidBody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
@@ -89,7 +90,7 @@ public class PlayerMovement : MonoBehaviour
         Vector2 capsuleSize = capsuleCollider.size;
         CapsuleDirection2D capsuleDir = capsuleCollider.direction;
         float checkDistance = 0.05f;
-        LayerMask platformMask = groundLayer;
+        LayerMask platformMask = GM.groundMask | GM.iceMask;
 
         // Ground and ceiling checks
         bool groundHit = Physics2D.CapsuleCast(capsuleCenter, capsuleSize, capsuleDir, 0, Vector2.down, checkDistance, platformMask);

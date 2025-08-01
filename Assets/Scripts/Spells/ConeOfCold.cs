@@ -6,7 +6,8 @@ public class ConeOfCold : Spell
 {
     public override void Cast(GameObject player)
     {
-        LayerMask hitMask = GameManager.Instance.enemyMask | GameManager.Instance.waterMask;
+        GameManager GM = GameManager.Instance;
+        LayerMask hitMask = GM.enemyMask | GM.waterMask;
         Debug.Log("Cast Cone of Cold");
         Vector2 origin = player.transform.position;
         Vector2 direction = player.GetComponent<PlayerMovement>().Direction;

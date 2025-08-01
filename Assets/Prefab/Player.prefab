@@ -595,9 +595,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c7f7686197268c4baf84e05dbc6d447, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
   spriteTransform: {fileID: 7826448424070829147}
   moveSpeed: 14
   acceleration: 120
@@ -607,7 +604,7 @@ MonoBehaviour:
   jumpForce: 36
   coyoteTime: 0.15
   jumpBufferTime: 0.2
-  jumpEndEarlyGravityMultiplier: 3
+  jumpEndEarlyGravityMultiplier: 2
   maxFallSpeed: 40
   fallAcceleration: 110
   groundingForce: -1.5
