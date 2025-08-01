@@ -4,30 +4,37 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ConeOfCold", menuName = "Scriptable Objects/Spells/ConeOfCold")]
 public class ConeOfCold : Spell
 {
-    public float angle = 45f;
-    public LayerMask hitMask;
-
     public override void Cast(GameObject player)
     {
-        Debug.Log("Cast Cone");
+        LayerMask hitMask = GameManager.Instance.enemyMask | GameManager.Instance.waterMask;
+        Debug.Log("Cast Cone of Cold");
         Vector2 origin = player.transform.position;
         Vector2 direction = player.GetComponent<PlayerMovement>().Direction;
-        Collider2D[] hits = Physics2D.OverlapCircleAll(origin, range, hitMask);
+
+        Vector2 boxCenter = origin + new Vector2(direction.x * rangeX * 0.5f, 0f);
+        Vector2 boxSize = new Vector2(rangeX, rangey);
+
+        Collider2D[] hits = Physics2D.OverlapBoxAll(boxCenter, boxSize, 0f, hitMask);
+
+        DrawDebugBox(boxCenter, boxSize);
 
         foreach (var hit in hits)
         {
-            Debug.Log($"Detected object in range: {hit.name}");
-            Vector2 toTarget = (Vector2)hit.transform.position - origin;
-            float angleToTarget = Vector2.Angle(direction, toTarget);
 
-            if (angleToTarget <= angle / 2f)
+            if (hit.TryGetComponent(out IDamageable damageable))
             {
-                if (hit.TryGetComponent(out IDamageable damageable))
-                {
-                    damageable.TakeDamage(damage);
-                }
+                Debug.Log($"Hit Enemy: {hit.name}");
+                damageable.TakeDamage(damage);
+            }
+
+            if (hit.TryGetComponent(out WaterTile waterTile))
+            {
+                Debug.Log($"Hit Water: {hit.name}");
+                waterTile.Freeze();
             }
         }
+        
+        // Note that there is one particleInstance being reused, meaning there will be issue if cooldown is less than the duration of the particles
 
         Transform spellSpawnPoint = player.GetComponent<PlayerCharacter>().SpellSpawnPoint;
         if (particle && spellSpawnPoint)
@@ -42,6 +49,7 @@ public class ConeOfCold : Spell
             particleInstance.Play();
             particleInstance.Play();
         }
+
     }
 }
 

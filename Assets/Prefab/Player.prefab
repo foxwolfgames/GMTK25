@@ -150,6 +150,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6827918657714257846}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3861695482628873252
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5120223009677416083}
+  m_Layer: 9
+  m_Name: SpellSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5120223009677416083
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3861695482628873252}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6827918657714257846}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5461210751858955058
 GameObject:
   m_ObjectHideFlags: 0
@@ -368,6 +399,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7826448424070829147}
+  - {fileID: 5120223009677416083}
   - {fileID: 4481545398516630853}
   - {fileID: 8792022405518055977}
   - {fileID: 3802273175973399405}
@@ -452,6 +484,7 @@ MonoBehaviour:
   player: {fileID: 9154293436212090034}
   playerCamera: {fileID: 0}
   virtualCamera: {fileID: 7027796367288014004}
+  SpellSpawnPoint: {fileID: 5120223009677416083}
 --- !u!114 &8532100789446771884
 MonoBehaviour:
   m_ObjectHideFlags: 0

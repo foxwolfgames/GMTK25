@@ -15,9 +15,13 @@ MonoBehaviour:
   spellName: ConeOfCold
   cooldown: 1
   damage: 10
-  range: 5
+  rangeX: 5
+  rangey: 3
   particle: {fileID: 5522749148363507743, guid: fa5925bbc08519545a66d9481b095dd7, type: 3}
-  angle: 45
-  hitMask:
+  showDebugBox: 1
+  enemyMask:
     serializedVersion: 2
     m_Bits: 256
+  waterMask:
+    serializedVersion: 2
+    m_Bits: 16

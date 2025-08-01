@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpForce = 36f;
     [SerializeField] private float coyoteTime = 0.15f;
     [SerializeField] private float jumpBufferTime = 0.2f;
-    [SerializeField] private float jumpEndEarlyGravityMultiplier = 3f;
+    [SerializeField] private float jumpEndEarlyGravityMultiplier = 2f;
 
     [Header("Gravity")]
     [SerializeField] private float maxFallSpeed = 40f;
@@ -39,7 +39,6 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector2 movementInput;
     private bool jumpHeld;
-    private bool jumpPressed;
     private float lastJumpPressedTime;
     private float lastGroundedTime;
     private float timeLeftGrounded;
@@ -65,7 +64,6 @@ public class PlayerMovement : MonoBehaviour
         jumpAction = playerInput.actions["Jump"];
         jumpAction.performed += context =>
         {
-            jumpPressed = true;
             jumpHeld = true;
             lastJumpPressedTime = Time.time;
         };
