@@ -7,35 +7,30 @@ namespace Chronomance.Audio
     /// </summary>
     public class SoundClipInstance
     {
-        private readonly SoundClipData _data;
+        public SoundClipData Data { get; }
         private int _currentClipIndex;
 
         public SoundClipInstance(SoundClipData data)
         {
-            _data = data;
+            Data = data;
         }
 
         public AudioClip NextClip()
         {
-            if (_data.clips.Length == 0)
+            if (Data.clips.Length == 0)
             {
                 Debug.LogWarning("No audio clips available in SoundClipData!");
                 return null;
             }
 
-            switch (_data.pickClipStrategy)
+            _currentClipIndex = Data.pickClipStrategy switch
             {
-                case PickAudioClipStrategy.Random:
-                    _currentClipIndex = Random.Range(0, _data.clips.Length);
-                    break;
-                case PickAudioClipStrategy.Sequential:
-                    _currentClipIndex = (_currentClipIndex + 1) % _data.clips.Length;
-                    break;
-                default:
-                    throw new System.ArgumentOutOfRangeException();
-            }
+                PickAudioClipStrategy.Random => Random.Range(0, Data.clips.Length),
+                PickAudioClipStrategy.Sequential => (_currentClipIndex + 1) % Data.clips.Length,
+                _ => throw new System.ArgumentOutOfRangeException()
+            };
 
-            return _data.clips[_currentClipIndex];
+            return Data.clips[_currentClipIndex];
         }
     }
 }

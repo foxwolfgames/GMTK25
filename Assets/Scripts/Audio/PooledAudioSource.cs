@@ -3,12 +3,11 @@ using UnityEngine;
 
 namespace Chronomance.Audio
 {
-    [RequireComponent(typeof(AudioSource), typeof(AudioLowPassFilter))]
+    [RequireComponent(typeof(AudioSource))]
     public class PooledAudioSource : MonoBehaviour
     {
         private Guid _id;
         private AudioSource _source;
-        private AudioLowPassFilter _lowPassFilter;
         private Transform _parentTransform;
         private SoundClipInstance _currentSound;
 
@@ -19,14 +18,12 @@ namespace Chronomance.Audio
 
         public PooledAudioSource PlayClip(SoundClipData clip, Vector3 position)
         {
-            SetupForPlaying();
             transform.position = position;
             return Play(clip);
         }
 
         public PooledAudioSource PlayClip(SoundClipData clip, Transform parent)
         {
-            SetupForPlaying();
             _parentTransform = parent;
             transform.position = parent.position;
             return Play(clip);
@@ -34,21 +31,21 @@ namespace Chronomance.Audio
 
         private void Awake()
         {
-            _id = Guid.NewGuid();
             _source = GetComponent<AudioSource>();
-            _lowPassFilter = GetComponent<AudioLowPassFilter>();
         }
 
         private void OnEnable()
         {
             PauseAudioEvent.Handler += OnPause;
             UnpauseAudioEvent.Handler += OnUnpause;
+            StopAudioSourceEvent.Handler += OnStopAudioSource;
         }
 
         private void OnDisable()
         {
             PauseAudioEvent.Handler -= OnPause;
             UnpauseAudioEvent.Handler -= OnUnpause;
+            StopAudioSourceEvent.Handler -= OnStopAudioSource;
         }
 
         private void FixedUpdate()
@@ -68,10 +65,12 @@ namespace Chronomance.Audio
                 _parentTransform = null;
                 _currentSound = null;
                 gameObject.SetActive(false); // Deactivate this pooled audio source
+                new ReleasePooledAudioSourceEvent(this).Invoke();
             }
         }
 
-        private void SetupForPlaying()
+        // Called when this is pooled audio source is get by the pool
+        public void SetupForPlaying()
         {
             // Unexpected: We should not set up for play state if already playing
             if (gameObject.activeInHierarchy)
@@ -79,6 +78,8 @@ namespace Chronomance.Audio
                 throw new Exception("Attempted to setup to play pooled audio source that is already active.");
             }
 
+            // New id to track by
+            _id = Guid.NewGuid();
             gameObject.SetActive(true);
             _isPausedByGame = false;
             transform.localPosition = Vector3.zero; // Reset local position
@@ -86,12 +87,12 @@ namespace Chronomance.Audio
 
         private PooledAudioSource Play(SoundClipData clip)
         {
-
             var clipInstance = new SoundClipInstance(clip);
             _currentSound = clipInstance;
             _source.clip = clipInstance.NextClip();
             _source.ignoreListenerPause = clip.ignorePause;
 
+            _source.outputAudioMixerGroup = clip.output;
             _source.Play();
             _isPlaying = true;
             return this;
@@ -99,12 +100,31 @@ namespace Chronomance.Audio
 
         private void OnPause(PauseAudioEvent _)
         {
-            // TODO
+            if (!_isPlaying) return;
+            if (_currentSound?.Data.ignorePause ?? true) return;
+            
+            _isPausedByGame = true;
+            _source.Pause();
         }
 
         private void OnUnpause(UnpauseAudioEvent _)
         {
-            // TODO
+            if (!_isPlaying) return;
+            if (_currentSound?.Data.ignorePause ?? true) return;
+            
+            _isPausedByGame = false;
+            _source.UnPause();
+        }
+
+        private void OnStopAudioSource(StopAudioSourceEvent e)
+        {
+            if (!_isPlaying) return;
+            
+            // Only listen to events specifically targeting this audio source
+            if (e.AudioSourceId != _id) return;
+
+            // Stop sound, Update will take care of deactivation
+            _source.Stop();
         }
     }
 }

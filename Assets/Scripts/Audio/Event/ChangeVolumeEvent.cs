@@ -4,12 +4,19 @@ namespace Chronomance.Audio
 {
     public class ChangeVolumeEvent : FWEvent<ChangeVolumeEvent>
     {
-        public MixerType MixerType { get; private set; }
-        public float Volume { get; private set; }
-
-        public ChangeVolumeEvent(MixerType mixerType, float volume)
+        public enum MixerType
         {
-            MixerType = mixerType;
+            Master,
+            Music,
+            SoundEffects
+        }
+
+        public readonly MixerType Type;
+        public readonly float Volume;
+
+        public ChangeVolumeEvent(MixerType type, float volume)
+        {
+            Type = type;
             Volume = volume;
         }
     }

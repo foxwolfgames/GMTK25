@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace Chronomance.Audio
 {
@@ -6,8 +7,8 @@ namespace Chronomance.Audio
     public class SoundClipData : ScriptableObject
     {
         [Header("Information")]
-        public MixerType mixerType;
         public AudioClip[] clips;
+        public AudioMixerGroup output;
 
         [Header("Control")]
         public bool ignorePause;
