@@ -48,7 +48,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        GM = GameManager.Instance;
         rigidBody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
@@ -58,6 +57,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        GM = GameManager.Instance;
         moveAction = playerInput.actions["Move"];
         moveAction.performed += context => movementInput = context.ReadValue<Vector2>();
         moveAction.canceled += context => movementInput = Vector2.zero;
