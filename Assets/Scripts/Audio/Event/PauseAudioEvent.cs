@@ -1,5 +1,8 @@
 using FWGameLib.Common.EventSystem;
 
-public class PauseAudioEvent : FWEvent<PauseAudioEvent>
+namespace Chronomance.Audio
 {
+    public class PauseAudioEvent : FWEvent<PauseAudioEvent>
+    {
+    }
 }

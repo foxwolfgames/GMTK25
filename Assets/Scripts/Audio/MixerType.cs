@@ -1,6 +1,9 @@
-public enum MixerType
+namespace Chronomance.Audio
 {
-    Master,
-    Music,
-    SoundEffects
+    public enum MixerType
+    {
+        Master,
+        Music,
+        SoundEffects
+    }
 }

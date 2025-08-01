@@ -1,13 +1,16 @@
 using FWGameLib.Common.EventSystem;
 
-public class ChangeVolumeEvent : FWEvent<ChangeVolumeEvent>
+namespace Chronomance.Audio
 {
-    public MixerType MixerType { get; private set; }
-    public float Volume { get; private set; }
-
-    public ChangeVolumeEvent(MixerType mixerType, float volume)
+    public class ChangeVolumeEvent : FWEvent<ChangeVolumeEvent>
     {
-        MixerType = mixerType;
-        Volume = volume;
+        public MixerType MixerType { get; private set; }
+        public float Volume { get; private set; }
+
+        public ChangeVolumeEvent(MixerType mixerType, float volume)
+        {
+            MixerType = mixerType;
+            Volume = volume;
+        }
     }
 }

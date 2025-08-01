@@ -2,26 +2,29 @@ using System.Collections.Generic;
 using FWGameLib.Common;
 using UnityEngine;
 
-public class AudioSystem : Singleton<AudioSystem>
+namespace Chronomance.Audio
 {
-    [Header("Audio Source Pooling")]
-    [SerializeField] private GameObject pooledAudioSourcePrefab;
-    [SerializeField] private int audioSourcePoolSize = 30;
-
-    private List<GameObject> _audioSourcePool;
-    
-    private void Awake()
+    public class AudioSystem : Singleton<AudioSystem>
     {
-        _audioSourcePool = new List<GameObject>();
-        for (var i = 0; i < audioSourcePoolSize; i++)
+        [Header("Audio Source Pooling")]
+        [SerializeField] private GameObject pooledAudioSourcePrefab;
+        [SerializeField] private int audioSourcePoolSize = 30;
+
+        private List<GameObject> _audioSourcePool;
+
+        private void Awake()
         {
-            var pooledAudioSource = Instantiate(
-                pooledAudioSourcePrefab,
-                transform,
-                true
-            );
-            pooledAudioSource.SetActive(false);
-            _audioSourcePool.Add(pooledAudioSource);
+            _audioSourcePool = new List<GameObject>();
+            for (var i = 0; i < audioSourcePoolSize; i++)
+            {
+                var pooledAudioSource = Instantiate(
+                    pooledAudioSourcePrefab,
+                    transform,
+                    true
+                );
+                pooledAudioSource.SetActive(false);
+                _audioSourcePool.Add(pooledAudioSource);
+            }
         }
     }
 }

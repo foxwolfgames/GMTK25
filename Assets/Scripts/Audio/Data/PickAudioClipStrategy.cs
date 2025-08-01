@@ -1,5 +1,8 @@
-public enum PickAudioClipStrategy
+namespace Chronomance.Audio
 {
-    Random,
-    Sequential
+    public enum PickAudioClipStrategy
+    {
+        Random,
+        Sequential
+    }
 }
