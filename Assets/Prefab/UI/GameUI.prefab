@@ -202,8 +202,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Mana: {0}'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 804f78a5260c61a408c8dcabe355cae3, type: 2}
+  m_sharedMaterial: {fileID: -598216158959765250, guid: 804f78a5260c61a408c8dcabe355cae3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

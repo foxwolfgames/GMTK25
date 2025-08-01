@@ -1,11 +1,15 @@
 using UnityEditor;
 using UnityEngine;
+using Chronomance.Audio;
 
 [CreateAssetMenu(fileName = "ConeOfCold", menuName = "Scriptable Objects/Spells/ConeOfCold")]
 public class ConeOfCold : Spell
 {
+    [SerializeField] private SoundClipData soundClip;
     public override void Cast(GameObject player)
     {
+        AudioSystem.Instance.Play(soundClip, player.transform);
+
         GameManager GM = GameManager.Instance;
         LayerMask hitMask = GM.enemyMask | GM.waterMask;
         Debug.Log("Cast Cone of Cold");

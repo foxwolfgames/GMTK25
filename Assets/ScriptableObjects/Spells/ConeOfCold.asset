@@ -19,9 +19,4 @@ MonoBehaviour:
   rangey: 3
   particle: {fileID: 5522749148363507743, guid: fa5925bbc08519545a66d9481b095dd7, type: 3}
   showDebugBox: 1
-  enemyMask:
-    serializedVersion: 2
-    m_Bits: 256
-  waterMask:
-    serializedVersion: 2
-    m_Bits: 16
+  soundClip: {fileID: 11400000, guid: 12072acfb3678f847bfc441585244163, type: 2}

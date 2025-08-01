@@ -8,6 +8,7 @@ public abstract class Spell : ScriptableObject
     public float damage = 10f;
     public float rangeX = 5f;
     public float rangey = 3f;
+    public int manaCost = 20;
 
     [Header("References")]
     public ParticleSystem particle;

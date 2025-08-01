@@ -22,10 +22,7 @@ public class WaterTerrain : Terrain
             Debug.Log("Water Tile Prefab is null");
             return;
         }
-        foreach (Transform child in TerrainManager.Instance.WaterTiles)
-        {
-            Destroy(child.gameObject);
-        }
+        Debug.Log($"Generating water from {gameObject.name}");
 
         Vector3 scale = transform.localScale;
         int width = Mathf.RoundToInt(scale.x);
@@ -38,7 +35,7 @@ public class WaterTerrain : Terrain
             float xPos = origin.x + x - (width / 2f) + 0.5f;
             Vector3 spawnPos = new Vector3(xPos, topY, 0f);
             GameObject tile = Instantiate(waterTilePrefab, spawnPos, Quaternion.identity, TerrainManager.Instance.WaterTiles);
-            tile.name = $"WaterTile_Top_{x}";
+            //tile.name = $"WaterTile_Top_{x}";
         }
     }
 }
