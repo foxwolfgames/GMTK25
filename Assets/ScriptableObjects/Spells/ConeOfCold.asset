@@ -9,14 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b52be533a6b610646a3345959a541b72, type: 3}
+  m_Script: {fileID: 11500000, guid: 1d96847e903906b4b880d770b1eadb2e, type: 3}
   m_Name: ConeOfCold
   m_EditorClassIdentifier: 
-  spellName: ConeOfCold
+  spellName: Cone of Cold
   cooldown: 1
   damage: 10
   rangeX: 5
   rangey: 3
+  duration: 1
+  manaCost: 20
+  soundClip: {fileID: 11400000, guid: 12072acfb3678f847bfc441585244163, type: 2}
   particle: {fileID: 5522749148363507743, guid: fa5925bbc08519545a66d9481b095dd7, type: 3}
   showDebugBox: 1
-  soundClip: {fileID: 11400000, guid: 12072acfb3678f847bfc441585244163, type: 2}

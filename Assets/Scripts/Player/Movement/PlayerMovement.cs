@@ -45,9 +45,11 @@ public class PlayerMovement : MonoBehaviour
     private bool jumpEndedEarly;
 
     public Vector2 Direction;
+    private PlayerCharacter player;
 
     private void Awake()
     {
+        player = GetComponent<PlayerCharacter>();
         rigidBody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
@@ -135,11 +137,13 @@ public class PlayerMovement : MonoBehaviour
         {
             spriteTransform.localScale = new Vector3(1, 1, 1);
             Direction = Vector2.right;
+            player.isFacingRight = true;
         }
         else if (movementInput.x < -0.01f)
         {
             spriteTransform.localScale = new Vector3(-1, 1, 1);
             Direction = Vector2.left;
+            player.isFacingRight = false;
         }
     }
 

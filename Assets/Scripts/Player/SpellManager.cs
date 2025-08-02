@@ -1,29 +1,38 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Windows;
+using UnityEngine.Pool;
 
 public class SpellManager : MonoBehaviour
 {
     [Header("Attributes")]
     [SerializeField, Tooltip("How much mana to start with per round")] private int defaultManaStat = 100;
-    [SerializeField, Tooltip("Current mana stats")] private int currentMana;
+    [SerializeField] private int currentMana;
 
+    [Header("Spell Prefabs (match spellList order)")]
+    [SerializeField] private List<Spell> spellPrefabs;
+
+    [SerializeField] private List<SpellSlot> spellList;
+
+    private List<ObjectPool<Spell>> spellPools = new();
+
+    [Header("References")]
+    [SerializeField] private Transform spellSpawnPoint;
+
+    private PlayerCharacter player;
     private PlayerInput playerInput;
     private InputAction cast1Action;
 
     [System.Serializable]
     public class SpellSlot
     {
-        public Spell spell;
+        public SpellData spell;
         public float lastCastTime = -Mathf.Infinity;
     }
-    [SerializeField] private List<SpellSlot> spellList;
-
 
     private void Awake()
     {
+        player = GetComponent<PlayerCharacter>();
         playerInput = GetComponent<PlayerInput>();
     }
 
@@ -32,7 +41,42 @@ public class SpellManager : MonoBehaviour
         SetCurrentMana(defaultManaStat);
         cast1Action = playerInput.actions["Cast1"];
         cast1Action.performed += context => TryCast(0);
+
+        for (int i = 0; i < spellPrefabs.Count; i++)
+        {
+            int poolIndex = i;
+
+            ObjectPool<Spell> pool = null;
+
+            pool = new ObjectPool<Spell>(
+                createFunc: () =>
+                {
+                    Spell spell = Instantiate(spellPrefabs[poolIndex], spellSpawnPoint.position, Quaternion.identity);
+                    spell.SetPool(pool);
+                    spell.transform.SetParent(SpellPoolManager.Instance.transform);
+                    return spell;
+                },
+                actionOnGet: spell =>
+                {
+                    spell.gameObject.SetActive(true);
+                    spell.Initialize(spellList[poolIndex].spell, gameObject, player.isFacingRight);
+                },
+                actionOnRelease: spell => spell.gameObject.SetActive(false),
+                actionOnDestroy: spell =>
+                {
+                    if (spell != null)
+                        Destroy(spell.gameObject);
+                },
+                collectionCheck: false,
+                defaultCapacity: 5,
+                maxSize: 20
+            );
+
+            spellPools.Add(pool);
+        }
+
     }
+
     private void OnEnable()
     {
         RoundStartEvent.Handler += OnRoundReset;
@@ -42,37 +86,46 @@ public class SpellManager : MonoBehaviour
     {
         RoundStartEvent.Handler -= OnRoundReset;
     }
+
+    private void OnDestroy()
+    {
+        spellPools.Clear();
+    }
+
     private void SetCurrentMana(int mana)
     {
         currentMana = mana;
         new ManaValueUpdateEvent(mana).Invoke();
     }
+
     private void OnRoundReset(RoundStartEvent _)
     {
         SetCurrentMana(defaultManaStat);
     }
+
     public void TryCast(int index)
     {
         if (index < 0 || index >= spellList.Count) return;
 
-        if (currentMana <= 0)
+        SpellSlot currentSlot = spellList[index];
+        SpellData spellData = currentSlot.spell;
+
+        if (currentMana < spellData.manaCost)
         {
             Debug.Log("Not enough mana!");
             return;
         }
-        Debug.Log($"Spending {spellList[index].spell.manaCost} mana");
-        SetCurrentMana(currentMana - spellList[index].spell.manaCost);
 
-        SpellSlot currentSpell = spellList[index];
-        
-        if (Time.time >= currentSpell.lastCastTime + currentSpell.spell.cooldown)
+        if (Time.time < currentSlot.lastCastTime + spellData.cooldown)
         {
-            currentSpell.spell.Cast(gameObject);
-            currentSpell.lastCastTime = Time.time;
+            Debug.Log($"{spellData.spellName} is on cooldown");
+            return;
         }
-        else
-        {
-            Debug.Log($"{currentSpell.spell.spellName} is on cooldown");
-        }
+
+        currentSlot.lastCastTime = Time.time;
+        SetCurrentMana(currentMana - spellData.manaCost);
+
+        Debug.Log($"{index}-index");
+        spellPools[index].Get();
     }
 }
