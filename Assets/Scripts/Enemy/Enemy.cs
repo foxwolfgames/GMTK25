@@ -5,9 +5,19 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private float maxHealth = 30f;
     [SerializeField] private float currentHealth;
 
+    protected Rigidbody2D rb;
+
+    protected Transform playerTransform;
+
     private void Awake()
     {
         currentHealth = maxHealth;
+    }
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        playerTransform = GameManager.Instance.player.transform;
     }
 
     public void TakeDamage(float amount)

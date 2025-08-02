@@ -4,6 +4,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    [HideInInspector] public PlayerCharacter player;
+
     public enum Layer
     {
         Ground = 3,
@@ -29,5 +31,6 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerCharacter>();
     }
 }
