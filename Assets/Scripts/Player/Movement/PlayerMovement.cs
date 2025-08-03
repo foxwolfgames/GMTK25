@@ -137,13 +137,13 @@ public class PlayerMovement : MonoBehaviour
         {
             spriteTransform.localScale = new Vector3(1, 1, 1);
             Direction = Vector2.right;
-            player.isFacingRight = true;
+            player.IsFacingRight = true;
         }
         else if (movementInput.x < -0.01f)
         {
             spriteTransform.localScale = new Vector3(-1, 1, 1);
             Direction = Vector2.left;
-            player.isFacingRight = false;
+            player.IsFacingRight = false;
         }
     }
 

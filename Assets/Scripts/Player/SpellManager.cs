@@ -22,6 +22,7 @@ public class SpellManager : MonoBehaviour
     private PlayerCharacter player;
     private PlayerInput playerInput;
     private InputAction cast1Action;
+    private InputAction cast2Action;
 
     [System.Serializable]
     public class SpellSlot
@@ -41,6 +42,8 @@ public class SpellManager : MonoBehaviour
         SetCurrentMana(defaultManaStat);
         cast1Action = playerInput.actions["Cast1"];
         cast1Action.performed += context => TryCast(0);
+        cast2Action = playerInput.actions["Cast2"];
+        cast2Action.performed += context => TryCast(1);
 
         for (int i = 0; i < spellPrefabs.Count; i++)
         {
@@ -59,7 +62,7 @@ public class SpellManager : MonoBehaviour
                 actionOnGet: spell =>
                 {
                     spell.gameObject.SetActive(true);
-                    spell.Initialize(spellList[poolIndex].spell, gameObject, player.isFacingRight);
+                    spell.Initialize(spellList[poolIndex].spell, gameObject);
                 },
                 actionOnRelease: spell => spell.gameObject.SetActive(false),
                 actionOnDestroy: spell =>
@@ -105,6 +108,7 @@ public class SpellManager : MonoBehaviour
 
     public void TryCast(int index)
     {
+        Debug.Log($"Try Cast {index}");
         if (index < 0 || index >= spellList.Count) return;
 
         SpellSlot currentSlot = spellList[index];
@@ -125,7 +129,6 @@ public class SpellManager : MonoBehaviour
         currentSlot.lastCastTime = Time.time;
         SetCurrentMana(currentMana - spellData.manaCost);
 
-        Debug.Log($"{index}-index");
         spellPools[index].Get();
     }
 }

@@ -1,12 +1,6 @@
 using UnityEngine;
 
-public enum WaterState
-{
-    Water,
-    Freezing1,
-    Freezing2,
-    Frozen,
-}
+public enum WaterState { Water, Freezing1, Freezing2, Frozen, }
 public class WaterTile : MonoBehaviour
 {
     private Collider2D tileCollider;
