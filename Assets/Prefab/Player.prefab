@@ -485,6 +485,7 @@ MonoBehaviour:
   playerCamera: {fileID: 0}
   virtualCamera: {fileID: 7027796367288014004}
   SpellSpawnPoint: {fileID: 5120223009677416083}
+  IsFacingRight: 1
 --- !u!114 &8532100789446771884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -578,6 +579,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: b014527a-a140-4d1b-bd74-7d369321aa34
     m_ActionName: 'Player/Cast1[/Keyboard/q,/Keyboard/1]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2f73cfa4-4959-470a-a37e-7059c4f3c257
+    m_ActionName: 'Player/Cast2[/Keyboard/w,/Keyboard/2]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
@@ -623,8 +628,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32e9594bda89cfb449b8887e97588e99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultManaStat: 100
+  defaultManaStat: 10000
   currentMana: 0
+  spellPrefabs:
+  - {fileID: 5787810596345701425, guid: a63a281a9f0dc4b49b5672d040774d4b, type: 3}
+  - {fileID: -3994732448454888811, guid: 556b3bd7efbaeaf4894684a4354d6fff, type: 3}
   spellList:
   - spell: {fileID: 11400000, guid: 2e824ffd1f3c13049ab65a7f410efdaf, type: 2}
     lastCastTime: -Infinity
+  - spell: {fileID: 11400000, guid: 408f7af11ea655e4b95f3aaef75af3c3, type: 2}
+    lastCastTime: -Infinity
+  spellSpawnPoint: {fileID: 5120223009677416083}
