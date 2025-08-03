@@ -6,4 +6,5 @@ public class PlayerCharacter : MonoBehaviour
     public Camera playerCamera;
     public CinemachineCamera virtualCamera;
     public Transform SpellSpawnPoint;
+    public bool IsFacingRight = true;
 }
