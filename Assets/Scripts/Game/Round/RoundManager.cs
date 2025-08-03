@@ -7,6 +7,15 @@ public class RoundManager : MonoBehaviour
 
     public int GetRound() => round;
 
+    private void Start()
+    {
+        // Set the round manager's scene to be the active scene
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != gameObject.scene.name)
+        {
+            UnityEngine.SceneManagement.SceneManager.SetActiveScene(gameObject.scene);
+        }
+    }
+
     private void OnEnable()
     {
         TriggerResetEvent.Handler += ResetRound;
