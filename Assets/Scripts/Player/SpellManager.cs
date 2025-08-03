@@ -21,6 +21,8 @@ public class SpellManager : MonoBehaviour
     }
     [SerializeField] private List<SpellSlot> spellList;
 
+    [Header("UI Elements")]
+    public ManaIndicator manaIndicator;
 
     private void Awake()
     {
@@ -45,6 +47,8 @@ public class SpellManager : MonoBehaviour
     private void SetCurrentMana(int mana)
     {
         currentMana = mana;
+        manaIndicator.FillAmount = (float)currentMana / (float)defaultManaStat;
+        //Debug.Log("Fill amount ratio:" + manaIndicator.fillAmount);
         new ManaValueUpdateEvent(mana).Invoke();
     }
     private void OnRoundReset(RoundStartEvent _)
