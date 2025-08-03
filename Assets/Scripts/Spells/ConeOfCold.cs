@@ -1,60 +1,91 @@
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Pool;
 using Chronomance.Audio;
+using System.Collections.Generic;
 
-[CreateAssetMenu(fileName = "ConeOfCold", menuName = "Scriptable Objects/Spells/ConeOfCold")]
 public class ConeOfCold : Spell
 {
-    [SerializeField] private SoundClipData soundClip;
-    public override void Cast(GameObject player)
+    private PlayerCharacter player;
+    protected ParticleSystem particleInstance;
+    private ObjectPool<Spell> spellPool;
+    private HashSet<GameObject> hitTargets = new();
+    private float elapsedTime;
+    private void FixedUpdate()
     {
-        AudioSystem.Instance.Play(soundClip, player.transform);
-
-        GameManager GM = GameManager.Instance;
-        LayerMask hitMask = GM.enemyMask | GM.waterMask;
-        Debug.Log("Cast Cone of Cold");
-        Vector2 origin = player.transform.position;
-        Vector2 direction = player.GetComponent<PlayerMovement>().Direction;
-
-        Vector2 boxCenter = origin + new Vector2(direction.x * rangeX * 0.5f, 0f);
-        Vector2 boxSize = new Vector2(rangeX, rangey);
-
-        Collider2D[] hits = Physics2D.OverlapBoxAll(boxCenter, boxSize, 0f, hitMask);
-
-        DrawDebugBox(boxCenter, boxSize);
-
-        foreach (var hit in hits)
+        if (elapsedTime >= spellData.duration)
         {
-
-            if (hit.TryGetComponent(out IDamageable damageable))
-            {
-                Debug.Log($"Hit Enemy: {hit.name}");
-                damageable.TakeDamage(damage);
-            }
-
-            if (hit.TryGetComponent(out WaterTile waterTile))
-            {
-                Debug.Log($"Hit Water: {hit.name}");
-                waterTile.Freeze();
-            }
-        }
-        
-        // Note that there is one particleInstance being reused, meaning there will be issue if cooldown is less than the duration of the particles
-
-        Transform spellSpawnPoint = player.GetComponent<PlayerCharacter>().SpellSpawnPoint;
-        if (particle && spellSpawnPoint)
-        {
-            if (!particleInstance)
-            {
-                particleInstance = Instantiate(particle, origin, Quaternion.identity);
-                particleInstance.transform.SetParent(spellSpawnPoint);
-            }
-            particleInstance.transform.rotation = Quaternion.Euler(0f, (direction.x > 0f) ? 0f : 180f, 0f);
-
-            particleInstance.Play();
-            particleInstance.Play();
+            spellPool.Release(this);
+            return;
         }
 
+        elapsedTime += Time.fixedDeltaTime;
+        transform.position = player.transform.position;
+    }
+    public override void Initialize(SpellData data, GameObject playerObj)
+    {
+        if (playerObj.TryGetComponent(out PlayerCharacter pc))
+        {
+            player = pc;
+        }
+        else
+        {
+            Debug.LogError("Initializing spell from a non-player?");
+            Destroy(gameObject);
+            return;
+        }
+
+        Vector3 scale = transform.localScale;
+        scale.x = Mathf.Abs(scale.x) * (player.IsFacingRight ? 1f : -1f);
+        transform.localScale = scale;
+
+        spellData = data;
+        elapsedTime = 0f;
+        hitTargets.Clear();
+
+        transform.position = player.transform.position;
+        gameObject.SetActive(true);
+
+        if (!particleInstance && spellData.particle)
+        {
+            particleInstance = Instantiate(spellData.particle, transform.position, Quaternion.identity, transform);
+            particleInstance.transform.SetParent(gameObject.transform);
+        }
+        if (particleInstance)
+        {
+            particleInstance.Clear(true);
+            particleInstance.Play(true);
+        }
+
+        if (spellData.soundClip)
+        {
+            AudioSystem.Instance.Play(spellData.soundClip, player.transform);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        GameObject target = other.gameObject;
+        if (hitTargets.Contains(target))
+            return;
+
+        if (other.TryGetComponent<IDamageable>(out IDamageable damageable))
+        {
+            Debug.Log($"Hit enemy: {other.gameObject.name}");
+            damageable.TakeDamage(spellData.damage);
+        }
+        if (other.TryGetComponent<WaterTile>(out WaterTile waterTile))
+        {
+            Debug.Log($"Hit Water: {other.gameObject.name}");
+            waterTile.Freeze();
+        }
+
+    }
+
+
+    public override void SetPool(ObjectPool<Spell> pool)
+    {
+        spellPool = pool;
     }
 }
 
