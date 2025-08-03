@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1306261903600439778}
   - component: {fileID: 3242169927701485468}
+  - component: {fileID: 356649208486488787}
+  - component: {fileID: 1567715869017743469}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -45,3 +47,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   round: 0
+  editorResetRound: 0
+--- !u!114 &356649208486488787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8713599319728456858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3087bd1f7fa4493986e4c863bed1abd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1567715869017743469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8713599319728456858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca8bb9b2caa4a0d88a166804f73b629, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scenesToLoadForGameplay: 02000000
+  artificialLoadingDelaySeconds: 0
